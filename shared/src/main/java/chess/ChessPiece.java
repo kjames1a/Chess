@@ -53,10 +53,66 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
 
+//    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+//        BishopMoves bishopValidMoves = new BishopMoves();
+//        Collection<ChessMove> moves = bishopValidMoves.pieceMoves(board, myPosition);
+//        return moves;
+//    }
+
+//    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+//        KingMoves kingValidMoves = new KingMoves();
+//        Collection<ChessMove> moves = kingValidMoves.pieceMoves(board, myPosition);
+//        return moves;
+//    }
+
+//        public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+//        KnightMoves knightValidMoves = new KnightMoves();
+//        Collection<ChessMove> moves = knightValidMoves.pieceMoves(board, myPosition);
+//        return moves;
+//    }
+
+//    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+//        RookMoves rookValidMoves = new RookMoves();
+//        Collection<ChessMove> moves = rookValidMoves.pieceMoves(board, myPosition);
+//        return moves;
+//    }
+
+//    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+//        QueenMoves queenValidMoves = new QueenMoves();
+//        Collection<ChessMove> moves = queenValidMoves.pieceMoves(board, myPosition);
+//        return moves;
+//    }
+//
+//        public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+//        PawnMoves pawnValidMoves = new PawnMoves();
+//        Collection<ChessMove> moves = pawnValidMoves.pieceMoves(board, myPosition);
+//        return moves;
+//    }
+
+
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        BishopMoves bishopValidMoves = new BishopMoves();
-        Collection<ChessMove> moves = bishopValidMoves.pieceMoves(board, myPosition);
-        return moves;
+        ChessPiece positionPiece = board.getPiece(myPosition);
+        PieceMoveCalc pieceValidMoves = new PieceMoveCalc();
+        Collection<ChessMove> validMoves = null;
+        if (PieceType.KNIGHT == positionPiece.getPieceType()) {
+            validMoves = pieceValidMoves.KnightPieceMoves(board, myPosition);
+        }
+        if (PieceType.KING == positionPiece.getPieceType()) {
+            validMoves = pieceValidMoves.kingPieceMoves(board, myPosition);
+        }
+        if (PieceType.QUEEN == positionPiece.getPieceType()) {
+            validMoves = pieceValidMoves.QueenPieceMoves(board, myPosition);
+        }
+        if (PieceType.ROOK == positionPiece.getPieceType()) {
+            validMoves = pieceValidMoves.RookPieceMoves(board, myPosition);
+        }
+        if (PieceType.PAWN == positionPiece.getPieceType()) {
+            validMoves = pieceValidMoves.PawnPieceMoves(board, myPosition);
+        }
+        if (PieceType.BISHOP == positionPiece.getPieceType()) {
+            validMoves = pieceValidMoves.bishopPieceMoves(board, myPosition);
+        }
+        return validMoves;
     }
 
     @Override
