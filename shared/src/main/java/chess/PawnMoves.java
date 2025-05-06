@@ -35,7 +35,7 @@ public class PawnMoves {
         return chessMoves;
     }
 
-    private boolean OutOfBounds(ChessPosition myPosition) {
+    private boolean outOfBounds(ChessPosition myPosition) {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
         return (row < 1 || col < 1 || row > 8 || col > 8);
@@ -52,7 +52,7 @@ public class PawnMoves {
             rowMove = row - 1;
         }
         ChessPosition targetPosition = new ChessPosition(rowMove, col);
-        if (!OutOfBounds(targetPosition) && board.getPiece(targetPosition) == null) {
+        if (!outOfBounds(targetPosition) && board.getPiece(targetPosition) == null) {
             if (mainTeam.getTeamColor() == ChessGame.TeamColor.WHITE && rowMove == 8) {
                 promotePawn(myPosition, targetPosition, chessMoves);
             } else if (mainTeam.getTeamColor() == ChessGame.TeamColor.BLACK && rowMove == 1) {
@@ -77,16 +77,17 @@ public class PawnMoves {
         int newCol = col + colMove;
         ChessPiece mainTeam = board.getPiece(myPosition);
         ChessPosition targetPosition = new ChessPosition(newRow, newCol);
-        if (!OutOfBounds(targetPosition)) {
+        if (!outOfBounds(targetPosition)) {
             ChessPiece oppTeam = board.getPiece(targetPosition);
-            if (oppTeam != null && oppTeam.getTeamColor() != mainTeam.getTeamColor())
+            if (oppTeam != null && oppTeam.getTeamColor() != mainTeam.getTeamColor()) {
                 if (mainTeam.getTeamColor() == ChessGame.TeamColor.WHITE && newRow == 8) {
-                promotePawn(myPosition, targetPosition, chessMoves);
-            } else if (mainTeam.getTeamColor() == ChessGame.TeamColor.BLACK && newRow == 1) {
-                promotePawn(myPosition, targetPosition, chessMoves);
-            } else {
+                    promotePawn(myPosition, targetPosition, chessMoves);
+                } else if (mainTeam.getTeamColor() == ChessGame.TeamColor.BLACK && newRow == 1) {
+                    promotePawn(myPosition, targetPosition, chessMoves);
+                } else {
                     chessMoves.add(new ChessMove(myPosition, targetPosition, null));
                 }
             }
+        }
         }
     }

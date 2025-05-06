@@ -17,7 +17,7 @@ public class KingMoves {
         return chessPieceMoves;
     }
 
-    private boolean OutOfBounds (ChessPosition myPosition) {
+    private boolean outOfBounds (ChessPosition myPosition) {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
         return (row < 1 || col < 1 || row > 8 || col > 8);
@@ -28,7 +28,7 @@ public class KingMoves {
         int col = myPosition.getColumn();
         int newRow = row + rowMove;
         int newCol = col + colMove;
-        if (!OutOfBounds(new ChessPosition(newRow, newCol))) {
+        if (!outOfBounds(new ChessPosition(newRow, newCol))) {
             ChessPosition endPosition = new ChessPosition(newRow, newCol);
             ChessPiece mainTeam = board.getPiece(myPosition);
             ChessPiece oppTeam = board.getPiece(endPosition);

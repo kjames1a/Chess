@@ -59,19 +59,19 @@ public class ChessPiece {
         PieceMoveCalc pieceValidMoves = new PieceMoveCalc();
         Collection<ChessMove> validMoves = null;
         if (PieceType.KNIGHT == positionPiece.getPieceType()) {
-            validMoves = pieceValidMoves.KnightPieceMoves(board, myPosition);
+            validMoves = pieceValidMoves.knightPieceMoves(board, myPosition);
         }
         if (PieceType.KING == positionPiece.getPieceType()) {
             validMoves = pieceValidMoves.kingPieceMoves(board, myPosition);
         }
         if (PieceType.QUEEN == positionPiece.getPieceType()) {
-            validMoves = pieceValidMoves.QueenPieceMoves(board, myPosition);
+            validMoves = pieceValidMoves.queenPieceMoves(board, myPosition);
         }
         if (PieceType.ROOK == positionPiece.getPieceType()) {
-            validMoves = pieceValidMoves.RookPieceMoves(board, myPosition);
+            validMoves = pieceValidMoves.rookPieceMoves(board, myPosition);
         }
         if (PieceType.PAWN == positionPiece.getPieceType()) {
-            validMoves = pieceValidMoves.PawnPieceMoves(board, myPosition);
+            validMoves = pieceValidMoves.pawnPieceMoves(board, myPosition);
         }
         if (PieceType.BISHOP == positionPiece.getPieceType()) {
             validMoves = pieceValidMoves.bishopPieceMoves(board, myPosition);

@@ -16,28 +16,28 @@ public class PieceMoveCalc {
         return kingMoves;
     }
 
-    public Collection<ChessMove> QueenPieceMoves(ChessBoard board, ChessPosition myPosition) {
+    public Collection<ChessMove> queenPieceMoves(ChessBoard board, ChessPosition myPosition) {
         QueenMoves queenValidMoves = new QueenMoves();
         Collection<ChessMove> queenMoves = queenValidMoves.pieceMoves(board, myPosition);
         return queenMoves;
     }
 
-    public Collection<ChessMove> RookPieceMoves(ChessBoard board, ChessPosition myPosition) {
+    public Collection<ChessMove> rookPieceMoves(ChessBoard board, ChessPosition myPosition) {
         RookMoves rookValidMoves = new RookMoves();
         Collection<ChessMove> rookMoves = rookValidMoves.pieceMoves(board, myPosition);
         return rookMoves;
     }
 
-    public Collection<ChessMove> KnightPieceMoves(ChessBoard board, ChessPosition myPosition) {
+    public Collection<ChessMove> knightPieceMoves(ChessBoard board, ChessPosition myPosition) {
         KnightMoves knightValidMoves = new KnightMoves();
         Collection<ChessMove> knightMoves = knightValidMoves.pieceMoves(board, myPosition);
         return knightMoves;
     }
 
-    public Collection<ChessMove> PawnPieceMoves(ChessBoard board, ChessPosition myPosition) {
+    public Collection<ChessMove> pawnPieceMoves(ChessBoard board, ChessPosition myPosition) {
         PawnMoves pawnValidMoves = new PawnMoves();
-        Collection<ChessMove> PawnMoves = pawnValidMoves.pieceMoves(board, myPosition);
-        return PawnMoves;
+        Collection<ChessMove> pawnMoves = pawnValidMoves.pieceMoves(board, myPosition);
+        return pawnMoves;
     }
 
 
