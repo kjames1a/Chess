@@ -5,16 +5,16 @@ import java.util.Collection;
 
 public class KnightMoves {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessMove> chessMoves = new ArrayList<>();
-        knightMovesCapture(myPosition, chessMoves, 2, 1, board);
-        knightMovesCapture(myPosition, chessMoves, -2, 1, board);
-        knightMovesCapture(myPosition, chessMoves, 2, -1, board);
-        knightMovesCapture(myPosition, chessMoves, -2, -1, board);
-        knightMovesCapture(myPosition, chessMoves, -1, -2, board);
-        knightMovesCapture(myPosition, chessMoves, -1, 2, board);
-        knightMovesCapture(myPosition, chessMoves, 1, 2, board);
-        knightMovesCapture(myPosition, chessMoves, 1, -2, board);
-        return chessMoves;
+        Collection<ChessMove> chessPieceMoves = new ArrayList<>();
+        knightMovesCapture(myPosition, chessPieceMoves, 2, 1, board);
+        knightMovesCapture(myPosition, chessPieceMoves, -2, 1, board);
+        knightMovesCapture(myPosition, chessPieceMoves, 2, -1, board);
+        knightMovesCapture(myPosition, chessPieceMoves, -2, -1, board);
+        knightMovesCapture(myPosition, chessPieceMoves, -1, -2, board);
+        knightMovesCapture(myPosition, chessPieceMoves, -1, 2, board);
+        knightMovesCapture(myPosition, chessPieceMoves, 1, 2, board);
+        knightMovesCapture(myPosition, chessPieceMoves, 1, -2, board);
+        return chessPieceMoves;
     }
 
     private boolean OutOfBounds (ChessPosition myPosition) {
@@ -29,14 +29,14 @@ public class KnightMoves {
         int newRow = row + rowMove;
         int newCol = col + colMove;
         if (!OutOfBounds(new ChessPosition(newRow, newCol))) {
-            ChessPosition newPos = new ChessPosition(newRow, newCol);
+            ChessPosition endPosition = new ChessPosition(newRow, newCol);
             ChessPiece mainTeam = board.getPiece(myPosition);
-            ChessPiece oppTeam = board.getPiece(newPos);
+            ChessPiece oppTeam = board.getPiece(endPosition);
             if (oppTeam == null) {
-                chessMoves.add(new ChessMove(myPosition, newPos, null));
+                chessMoves.add(new ChessMove(myPosition, endPosition, null));
             } else {
                 if (oppTeam.getTeamColor() != mainTeam.getTeamColor()) {
-                    chessMoves.add(new ChessMove(myPosition, newPos, null));
+                    chessMoves.add(new ChessMove(myPosition, endPosition, null));
                 }
             }
         }

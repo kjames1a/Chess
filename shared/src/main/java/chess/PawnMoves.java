@@ -86,7 +86,6 @@ public class PawnMoves {
                 promotePawn(myPosition, targetPosition, chessMoves);
             } else {
                     chessMoves.add(new ChessMove(myPosition, targetPosition, null));
-
                 }
             }
         }

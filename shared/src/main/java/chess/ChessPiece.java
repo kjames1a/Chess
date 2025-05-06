@@ -53,42 +53,6 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
 
-//    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-//        BishopMoves bishopValidMoves = new BishopMoves();
-//        Collection<ChessMove> moves = bishopValidMoves.pieceMoves(board, myPosition);
-//        return moves;
-//    }
-
-//    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-//        KingMoves kingValidMoves = new KingMoves();
-//        Collection<ChessMove> moves = kingValidMoves.pieceMoves(board, myPosition);
-//        return moves;
-//    }
-
-//        public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-//        KnightMoves knightValidMoves = new KnightMoves();
-//        Collection<ChessMove> moves = knightValidMoves.pieceMoves(board, myPosition);
-//        return moves;
-//    }
-
-//    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-//        RookMoves rookValidMoves = new RookMoves();
-//        Collection<ChessMove> moves = rookValidMoves.pieceMoves(board, myPosition);
-//        return moves;
-//    }
-
-//    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-//        QueenMoves queenValidMoves = new QueenMoves();
-//        Collection<ChessMove> moves = queenValidMoves.pieceMoves(board, myPosition);
-//        return moves;
-//    }
-//
-//        public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-//        PawnMoves pawnValidMoves = new PawnMoves();
-//        Collection<ChessMove> moves = pawnValidMoves.pieceMoves(board, myPosition);
-//        return moves;
-//    }
-
 
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece positionPiece = board.getPiece(myPosition);

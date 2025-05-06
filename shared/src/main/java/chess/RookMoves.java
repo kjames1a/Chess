@@ -5,12 +5,12 @@ import java.util.Collection;
 
 public class RookMoves {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessMove> chessMoves = new ArrayList<>();
-        rookMovesCapture(myPosition, chessMoves, 1, 0, board);
-        rookMovesCapture(myPosition, chessMoves, -1, 0, board);
-        rookMovesCapture(myPosition, chessMoves, 0, 1, board);
-        rookMovesCapture(myPosition, chessMoves, 0, -1, board);
-        return chessMoves;
+        Collection<ChessMove> chessPieceMoves = new ArrayList<>();
+        rookMovesCapture(myPosition, chessPieceMoves, 1, 0, board);
+        rookMovesCapture(myPosition, chessPieceMoves, -1, 0, board);
+        rookMovesCapture(myPosition, chessPieceMoves, 0, 1, board);
+        rookMovesCapture(myPosition, chessPieceMoves, 0, -1, board);
+        return chessPieceMoves;
     }
 
     private boolean OutOfBounds (ChessPosition myPosition) {
@@ -25,14 +25,14 @@ public class RookMoves {
         int newRow = row + rowMove;
         int newCol = col + colMove;
         while (!OutOfBounds(new ChessPosition(newRow, newCol))) {
-            ChessPosition newPos = new ChessPosition(newRow, newCol);
+            ChessPosition endPosition = new ChessPosition(newRow, newCol);
             ChessPiece mainTeam = board.getPiece(myPosition);
-            ChessPiece oppTeam = board.getPiece(newPos);
+            ChessPiece oppTeam = board.getPiece(endPosition);
             if (oppTeam == null) {
-                chessMoves.add(new ChessMove(myPosition, newPos, null));
+                chessMoves.add(new ChessMove(myPosition, endPosition, null));
             } else {
                 if (oppTeam.getTeamColor() != mainTeam.getTeamColor()) {
-                    chessMoves.add(new ChessMove(myPosition, newPos, null));
+                    chessMoves.add(new ChessMove(myPosition, endPosition, null));
                 }
                 break;
             }
