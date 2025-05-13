@@ -93,7 +93,39 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        return true;
+        ChessPosition kingPosition = mainKingPosition(teamColor);
+        if (kingPosition == null){
+            return false;
+        }
+        for (int row = 1; row <= 8; row++){
+            for (int col = 1; col <= 8; col++){
+                ChessPosition oppPosition = new ChessPosition(row, col);
+                ChessPiece chessPiece = board.getPiece(oppPosition);
+                if (chessPiece != null && chessPiece.getTeamColor() != teamColor){
+                    Collection<ChessMove> oppMoves = chessPiece.pieceMoves(board, oppPosition);
+                    for (ChessMove pieceMove : oppMoves) {
+                        if(pieceMove.getEndPosition().equals(kingPosition)){
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+
+    private ChessPosition mainKingPosition(TeamColor teamColor) {
+        for (int row = 1; row <= 8; row++){
+            for (int col = 1; col <= 8; col++){
+                ChessPosition kingPosition = new ChessPosition(row, col);
+                ChessPiece chessPiece = board.getPiece(kingPosition);
+                if (chessPiece != null && chessPiece.getPieceType() == ChessPiece.PieceType.KING && chessPiece.getTeamColor() == teamColor){
+                    return kingPosition;
+                }
+            }
+        }
+        return null;
     }
 
     /**
