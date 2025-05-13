@@ -10,9 +10,9 @@ public class PieceMoveCalc {
         return bishopMoves;
     }
 
-    public Collection<ChessMove> kingPieceMoves(ChessBoard board, ChessPosition myPosition) {
-        KingMoves kingValidMoves = new KingMoves();
-        Collection<ChessMove> kingMoves = kingValidMoves.pieceMoves(board, myPosition);
+    public Collection<ChessMove> kingPieceMoves(ChessBoard board, ChessPosition kingPosition) {
+        KingMoves kingValidMoves = new KingMoves(kingPosition);
+        Collection<ChessMove> kingMoves = kingValidMoves.pieceMoves(board);
         return kingMoves;
     }
 
