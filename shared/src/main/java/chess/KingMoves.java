@@ -4,16 +4,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class KingMoves {
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+    private final ChessPosition kingPosition;
+
+    public KingMoves(ChessPosition kingPosition){
+        this.kingPosition = kingPosition;
+    }
+
+    public Collection<ChessMove> pieceMoves(ChessBoard board) {
         Collection<ChessMove> chessPieceMoves = new ArrayList<>();
-        kingMovesCapture(myPosition, chessPieceMoves, 1, 0, board);
-        kingMovesCapture(myPosition, chessPieceMoves, 1, 1, board);
-        kingMovesCapture(myPosition, chessPieceMoves, 0, 1, board);
-        kingMovesCapture(myPosition, chessPieceMoves, -1, 1, board);
-        kingMovesCapture(myPosition, chessPieceMoves, -1, 0, board);
-        kingMovesCapture(myPosition, chessPieceMoves, -1, -1, board);
-        kingMovesCapture(myPosition, chessPieceMoves, 0, -1, board);
-        kingMovesCapture(myPosition, chessPieceMoves, 1, -1, board);
+        kingMovesCapture(kingPosition, chessPieceMoves, 1, 0, board);
+        kingMovesCapture(kingPosition, chessPieceMoves, 1, 1, board);
+        kingMovesCapture(kingPosition, chessPieceMoves, 0, 1, board);
+        kingMovesCapture(kingPosition, chessPieceMoves, -1, 1, board);
+        kingMovesCapture(kingPosition, chessPieceMoves, -1, 0, board);
+        kingMovesCapture(kingPosition, chessPieceMoves, -1, -1, board);
+        kingMovesCapture(kingPosition, chessPieceMoves, 0, -1, board);
+        kingMovesCapture(kingPosition, chessPieceMoves, 1, -1, board);
         return chessPieceMoves;
     }
 
