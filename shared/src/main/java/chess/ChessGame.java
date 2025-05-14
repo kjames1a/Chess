@@ -86,12 +86,15 @@ public class ChessGame {
         ChessPosition startPosition = move.getStartPosition();
         ChessPosition endPosition = move.getEndPosition();
         ChessPiece chessPiece = board.getPiece(startPosition);
+        if (chessPiece == null) {
+            throw new InvalidMoveException("No chess piece");
+        }
         if (chessPiece.getTeamColor() != teamTurn){
             throw new InvalidMoveException("Not team turn");
         }
         Collection<ChessMove> chessMoves = validMoves(startPosition);
         if (!chessMoves.contains(move)){
-            throw new InvalidMoveException("Not a valid Move");
+            throw new InvalidMoveException("Not a valid move");
         }
         if (teamTurn == TeamColor.WHITE){
             teamTurn = TeamColor.BLACK;
@@ -196,6 +199,30 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        if (isInCheck(teamColor)){
+            return false;
+        }
+        for (int row = 1; row <= 8; row++){
+            for (int col = 1; col <= 8; col++){
+                ChessPosition chessPosition = new ChessPosition(row, col);
+                ChessPiece chessPiece = board.getPiece(chessPosition);
+                if (chessPiece != null && chessPiece.getTeamColor() == teamColor){
+                    Collection<ChessMove> chessMoves = chessPiece.pieceMoves(board, chessPosition);
+                    for (ChessMove chessMove : chessMoves) {
+                        ChessPiece tempPiece = board.getPiece(chessMove.getEndPosition());
+                        board.addPiece(chessMove.getEndPosition(), chessPiece);
+                        board.addPiece(chessPosition, null);
+                        if (!isInCheck(teamColor)){
+                            board.addPiece(chessPosition, chessPiece);
+                            board.addPiece(chessMove.getEndPosition(), tempPiece);
+                            return false;
+                        }
+                        board.addPiece(chessPosition, chessPiece);
+                        board.addPiece(chessMove.getEndPosition(), tempPiece);
+                    }
+                }
+            }
+        }
         return true;
     }
 
