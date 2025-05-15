@@ -175,16 +175,7 @@ public class ChessGame {
         if(!isInCheck(teamColor)){
             return false;
         }
-        for (int row = 1; row <= 8; row++){
-            for (int col = 1; col <= 8; col++) {
-                ChessPosition chessPosition = new ChessPosition(row, col);
-                ChessPiece chessPiece = board.getPiece(chessPosition);
-                if (!noMoveHelper(teamColor, chessPosition, chessPiece)){
-                    return false;
-                }
-            }
-        }
-        return true;
+        return noMoveHelper(teamColor);
     }
 
     /**
@@ -198,11 +189,15 @@ public class ChessGame {
         if (isInCheck(teamColor)){
             return false;
         }
+        return noMoveHelper(teamColor);
+    }
+
+    private boolean noMoveHelper(TeamColor teamColor){
         for (int row = 1; row <= 8; row++){
             for (int col = 1; col <= 8; col++) {
                 ChessPosition chessPosition = new ChessPosition(row, col);
                 ChessPiece chessPiece = board.getPiece(chessPosition);
-                if (!noMoveHelper(teamColor, chessPosition, chessPiece)){
+                if (!simulateMoveHelper(teamColor, chessPosition, chessPiece)){
                     return false;
                 }
             }
@@ -210,7 +205,7 @@ public class ChessGame {
         return true;
     }
 
-    private boolean noMoveHelper(TeamColor teamColor, ChessPosition chessPosition, ChessPiece chessPiece) {
+    private boolean simulateMoveHelper(TeamColor teamColor, ChessPosition chessPosition, ChessPiece chessPiece) {
         if (chessPiece != null && chessPiece.getTeamColor() == teamColor) {
             Collection<ChessMove> chessMoves = chessPiece.pieceMoves(board, chessPosition);
             for (ChessMove chessMove : chessMoves) {
