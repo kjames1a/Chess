@@ -1,4 +1,4 @@
-package dataaccess;
+package exceptions;
 
 import com.google.gson.Gson;
 
