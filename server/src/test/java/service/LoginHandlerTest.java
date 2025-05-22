@@ -1,4 +1,4 @@
-package server;
+package service;
 
 import dataaccess.*;
 import exceptions.ResponseException;
@@ -6,7 +6,6 @@ import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.LoginService;
 
 
 import static org.junit.jupiter.api.Assertions.*;

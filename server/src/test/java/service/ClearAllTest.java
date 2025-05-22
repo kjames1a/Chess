@@ -1,4 +1,4 @@
-package server;
+package service;
 
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;

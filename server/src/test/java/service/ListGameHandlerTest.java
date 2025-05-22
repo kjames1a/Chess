@@ -1,14 +1,12 @@
-package server;
+package service;
 
 import chess.ChessGame;
 import dataaccess.*;
 import exceptions.ResponseException;
 import model.AuthData;
 import model.GameData;
-import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.ListGameService;
 
 
 import static org.junit.jupiter.api.Assertions.*;
