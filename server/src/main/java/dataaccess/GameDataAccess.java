@@ -6,7 +6,7 @@ import java.util.Collection;
 
 
     public interface GameDataAccess {
-        int addGame(String gameName) throws DataAccessException;
+        int addGame(String gameData) throws DataAccessException;
 
         Collection<GameData> listGame() throws DataAccessException;
 
