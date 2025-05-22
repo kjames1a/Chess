@@ -23,6 +23,9 @@ import java.util.UUID;
         }
 
         public AuthData login(UserData userData) throws ResponseException, DataAccessException {
+            if (userData == null) {
+                throw new ResponseException(401, "Error: Unauthorized");
+            }
             String username = userData.getUsername();
             String password = userData.getPassword();
             UserData user = userDataAccess.getUser(username);

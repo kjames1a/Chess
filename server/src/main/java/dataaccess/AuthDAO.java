@@ -31,7 +31,6 @@ public class AuthDAO implements AuthDataAccess{
         }
     }
 
-
     public void deleteAllAuthTokens(){
         tokens.clear();
     }

@@ -22,6 +22,9 @@ public class RegisterService {
     }
 
     public AuthData register(UserData userData) throws ResponseException, DataAccessException {
+        if (userData == null) {
+            throw new ResponseException(400, "Error: bad request");
+        }
         String username = userData.getUsername();
         String password = userData.getPassword();
         String email = userData.getEmail();
