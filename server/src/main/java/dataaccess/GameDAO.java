@@ -12,7 +12,7 @@ public class GameDAO implements GameDataAccess {
 
 
     public GameData getGame(int gameID) {
-        gameData.get(gameID);
+        return gameData.get(gameID);
     }
 
     public int addGame(String gameName) {
@@ -24,10 +24,6 @@ public class GameDAO implements GameDataAccess {
 
     public Collection<GameData> listGame() {
         return gameData.values();
-    }
-
-    public void joinGame(GameData game) {
-        gameData.put(game.getGameID(), game);
     }
 
     public void deleteAllGames(){

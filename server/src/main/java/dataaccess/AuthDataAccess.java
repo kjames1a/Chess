@@ -5,11 +5,11 @@ import model.AuthData;
 import java.util.Collection;
 
 public interface AuthDataAccess {
-    AuthData addAuthToken(AuthData username) throws DataAccessException;
+    AuthData addAuthToken(AuthData authData) throws DataAccessException;
 
-    AuthData getAuthToken(String username) throws DataAccessException;
+    AuthData getAuthToken(String authToken) throws DataAccessException;
 
-    void deleteAuthToken(String username) throws DataAccessException;
+    void deleteAuthToken(String authToken) throws DataAccessException;
 
     void deleteAllAuthTokens() throws DataAccessException;
 

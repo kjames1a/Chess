@@ -22,17 +22,15 @@ public class AuthDAO implements AuthDataAccess{
         return authToken;
     }
 
-    public Collection<AuthData> listAuthTokens() {
-        return tokens;
-    }
-
     public void deleteAuthToken(String authToken) {
-        for (AuthData token : tokens) {
+        for (AuthData token : tokens){
             if (token.getAuthToken().equals(authToken)){
                 tokens.remove(token);
+                break;
             }
         }
     }
+
 
     public void deleteAllAuthTokens(){
         tokens.clear();

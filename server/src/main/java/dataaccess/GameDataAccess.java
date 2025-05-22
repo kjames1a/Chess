@@ -12,8 +12,6 @@ import java.util.Collection;
 
         GameData getGame(int gameID) throws DataAccessException;
 
-        void joinGame(GameData game) throws DataAccessException;
-
         void deleteAllGames() throws DataAccessException;
     }
 

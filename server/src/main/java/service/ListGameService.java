@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.*;
+import exceptions.ResponseException;
 import model.*;
 
 import java.util.Collection;

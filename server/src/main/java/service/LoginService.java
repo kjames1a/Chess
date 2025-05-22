@@ -1,7 +1,7 @@
 package service;
 
 import dataaccess.AuthDataAccess;
-import dataaccess.ResponseException;
+import exceptions.ResponseException;
 import dataaccess.UserDataAccess;
 import dataaccess.DataAccessException;
 import model.AuthData;
@@ -27,6 +27,10 @@ import java.util.UUID;
             String password = userData.getPassword();
             UserData user = userDataAccess.getUser(username);
             if (user == null) {
+                throw new ResponseException(401, "Error: Unauthorized");
+            } else if (user.getUsername() == null) {
+                throw new ResponseException(401, "Error: Unauthorized");
+            } else if (user.getPassword() == null) {
                 throw new ResponseException(401, "Error: Unauthorized");
             } else if (!user.getUsername().equals(username)) {
                 throw new ResponseException(401, "Error: Unauthorized");

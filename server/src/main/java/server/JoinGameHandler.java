@@ -1,10 +1,12 @@
 package server;
 
 import chess.ChessGame;
-import dataaccess.ErrorResponse;
+import exceptions.ErrorResponse;
 import com.google.gson.Gson;
 import dataaccess.*;
+import exceptions.ResponseException;
 import model.GameData;
+import model.JoinData;
 import service.JoinGameService;
 import spark.*;
 import spark.Request;
@@ -20,13 +22,11 @@ class JoinGameHandler {
     public Object handle(Request req, Response res) throws ResponseException {
         Gson gson = new Gson();
         try {
-            GameData gameData = gson.fromJson(req.body(), GameData.class);
+            JoinData joinData = gson.fromJson(req.body(), JoinData.class);
             String authToken = req.headers("authorization");
-            int gameID = gameData.getGameID();
-            if (authToken == null) {
-                throw new ResponseException(401, "Error: unauthorized");
-            }
-            GameData game = joinGameService.joinGame(authToken, gameID, ChessGame.TeamColor);
+            int gameID = joinData.getGameID();
+            String playerColor = joinData.getTeamColor();
+            GameData game = joinGameService.joinGame(authToken, gameID, playerColor);
             res.status(200);
             return gson.toJson(new CreateGameResponse(game.getGameID()));
         } catch (ResponseException ex) {
@@ -38,5 +38,6 @@ class JoinGameHandler {
         }
     }
     record CreateGameResponse(int gameID) {}
+
 }
 

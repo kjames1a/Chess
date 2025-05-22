@@ -2,6 +2,7 @@ package service;
 
 import chess.ChessGame;
 import dataaccess.*;
+import exceptions.ResponseException;
 import model.*;
 
 
@@ -14,7 +15,7 @@ public class JoinGameService {
         this.authDataAccess = authDataAccess;
     }
 
-    public GameData joinGame(String authToken, int gameID, ChessGame.TeamColor color) throws ResponseException, DataAccessException {
+    public GameData joinGame(String authToken, int gameID, String color) throws ResponseException, DataAccessException {
         AuthData authData = authDataAccess.getAuthToken(authToken);
         GameData gameData = gameDataAccess.getGame(gameID);
         if (authData == null) {
@@ -23,18 +24,21 @@ public class JoinGameService {
             throw new ResponseException(400, "Error: bad request");
         }
         String username = authData.getUsername();
-        if (color == ChessGame.TeamColor.BLACK) {
+        if (color == null) {
+            throw new ResponseException(400, "Error: bad request");
+        } else if (color.equals("BLACK")) {
             if (gameData.getBlackUsername() != null) {
                 throw new ResponseException(403, "Error: already taken");
             }
             gameData.setBlackUsername(username);
-        } else if (color == ChessGame.TeamColor.WHITE) {
-            if (gameData.getBlackUsername() != null) {
+        } else if (color.equals("WHITE")) {
+            if (gameData.getWhiteUsername() != null) {
                 throw new ResponseException(403, "Error: already taken");
             }
             gameData.setWhiteUsername(username);
+        } else if (!color.equals("BLACK") && !color.equals("WHITE")) {
+        throw new ResponseException(400, "Error: bad request");
         }
-        gameDataAccess.joinGame(gameData);
         return gameData;
     }
 }

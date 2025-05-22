@@ -1,70 +1,46 @@
 package server;
 
 import com.google.gson.Gson;
-import java.io.*;
-import java.net.*;
-import com.sun.net.httpserver.*;
-import dataaccess.DataAccess;
+import dataaccess.AuthDataAccess;
 import dataaccess.DataAccessException;
-import model.RegisterResult;
+import exceptions.ResponseException;
+import dataaccess.UserDataAccess;
+import exceptions.ErrorResponse;
+import model.AuthData;
 import model.UserData;
 import service.RegisterService;
+import spark.*;
+import spark.Request;
 
 
-class RegisterHandler implements HttpHandler {
-    private final DataAccess dataAccess;
+public class RegisterHandler {
+    private final RegisterService registerService;
 
-    public RegisterHandler(DataAccess dataAccess){
-        this.dataAccess = dataAccess;
+    public RegisterHandler(UserDataAccess userDataAccess, AuthDataAccess authDataAccess){
+        this.registerService = new RegisterService(userDataAccess, authDataAccess);
     }
 
-    public void handle(HttpExchange exchange) throws IOException {
-        boolean success = false;
+    public Object handle(Request req, Response res) throws ResponseException {
         Gson gson = new Gson();
         try {
-            if (exchange.getRequestMethod().toLowerCase().equals("post")) {
-                    InputStream reqBody = exchange.getRequestBody();
-                    String reqData = readString(reqBody);
-                    System.out.println(reqData);
-                    UserData request = (UserData)gson.fromJson(reqData, UserData.class);
-                    RegisterService service = new RegisterService(dataAccess);
-                    RegisterResult result = service.register(request);
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-                    OutputStream resBody = exchange.getResponseBody();
-                    String serialize = gson.toJson(result);
-                    writeString(serialize, resBody);
-                    resBody.close();
-                    success = true;
-                }
-            if (!success) {
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-                exchange.getResponseBody().close();
+            UserData userData = gson.fromJson(req.body(), UserData.class);
+            if (userData.getUsername() == null) {
+                throw new ResponseException(400, "Error: bad request");
+            } else if (userData.getPassword() == null) {
+                throw new ResponseException(400, "Error: bad request");
+            } else if (userData.getEmail() == null) {
+                throw new ResponseException(400, "Error: bad request");
             }
-        }
-        catch (IOException e) {
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
-            exchange.getResponseBody().close();
-            e.printStackTrace();
-        }
-        catch (DataAccessException e) {
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
-            exchange.getResponseBody().close();
-            e.printStackTrace();
+            AuthData authData = registerService.register(userData);
+            res.status(200);
+            return gson.toJson(authData);
+        } catch (ResponseException ex) {
+            res.status(ex.StatusCode());
+            return gson.toJson(new ErrorResponse(ex.getMessage()));
+        } catch (DataAccessException ex) {
+            res.status(500);
+            return gson.toJson(new ErrorResponse(ex.getMessage()));
         }
     }
-    private void writeString(String str, OutputStream os) throws IOException {
-        OutputStreamWriter sw = new OutputStreamWriter(os);
-        sw.write(str);
-        sw.flush();
-    }
-    private String readString(InputStream is) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        InputStreamReader sr = new InputStreamReader(is);
-        char[] buf = new char[1024];
-        int len;
-        while ((len = sr.read(buf)) > 0) {
-            sb.append(buf, 0, len);
-        }
-        return sb.toString();
-    }
+    public record RegisterRequest(String username, String password, String email) {}
 }

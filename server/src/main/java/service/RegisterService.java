@@ -1,33 +1,42 @@
 package service;
 
-import dataaccess.DataAccess;
+import dataaccess.AuthDataAccess;
+import exceptions.ResponseException;
+import dataaccess.UserDataAccess;
 import dataaccess.DataAccessException;
 import model.AuthData;
-import model.RegisterResult;
 import model.UserData;
 import java.util.UUID;
 
 public class RegisterService {
-    private final DataAccess dataAccess;
+    private final UserDataAccess userDataAccess;
+    private final AuthDataAccess authDataAccess;
 
-    public RegisterService(DataAccess dataAccess) {
-        this.dataAccess = dataAccess;
+    public RegisterService(UserDataAccess userDataAccess, AuthDataAccess authDataAccess) {
+        this.userDataAccess = userDataAccess;
+        this.authDataAccess = authDataAccess;
     }
 
     public static String generateToken() {
         return UUID.randomUUID().toString();
     }
 
-    public RegisterResult register(UserData userData) throws DataAccessException {
+    public AuthData register(UserData userData) throws ResponseException, DataAccessException {
         String username = userData.getUsername();
-        if (dataAccess.getUser(username) != null){
-            return new RegisterResult(null, null, false);
-        } else {
-            String authToken = generateToken();
-            dataAccess.addUser(userData);
-            AuthData authData = new AuthData(authToken, username);
-            dataAccess.addAuthToken(authData);
-            return new RegisterResult(username, authToken, true);
+        String password = userData.getPassword();
+        String email = userData.getEmail();
+        UserData user = userDataAccess.getUser(username);
+        if (user != null) {
+            throw new ResponseException(403, "Error: already taken");
+        } else if (username == null || password == null || email == null) {
+            throw new ResponseException(400, "Error: bad request");
         }
+        String authToken = generateToken();
+        userDataAccess.addUser(userData);
+        AuthData authData = new AuthData(authToken, username);
+        authDataAccess.addAuthToken(authData);
+        return authData;
     }
 }
+
+
