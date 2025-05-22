@@ -32,7 +32,7 @@ class CreateGameHandler {
             res.status(200);
             return gson.toJson(new CreateGameResponse(game.getGameID()));
         } catch (ResponseException ex) {
-            res.status(ex.StatusCode());
+            res.status(ex.statusCode());
             return gson.toJson(new ErrorResponse(ex.getMessage()));
         } catch (DataAccessException ex) {
             res.status(500);

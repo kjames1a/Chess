@@ -25,7 +25,7 @@ class LogoutHandler {
             res.status(200);
             return "{}";
         } catch (ResponseException ex) {
-            res.status(ex.StatusCode());
+            res.status(ex.statusCode());
             return gson.toJson(new ErrorResponse(ex.getMessage()));
         } catch (Exception ex) {
             res.status(500);
