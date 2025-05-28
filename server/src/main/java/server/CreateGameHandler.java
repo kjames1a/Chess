@@ -17,18 +17,20 @@ class CreateGameHandler {
         this.createGameService = new CreateGameService(gameDataAccess, authDataAccess);
     }
 
-    public Object handle(Request req, Response res) throws ResponseException {
+    public Object handle(Request req, Response res) {
         Gson gson = new Gson();
         try {
             GameData gameData = gson.fromJson(req.body(), GameData.class);
             String authToken = req.headers("authorization");
             String gameName = gameData.getGameName();
+            String whiteUsername = gameData.getWhiteUsername();
+            String blackUsername = gameData.getBlackUsername();
             if (authToken == null) {
                 throw new ResponseException(401, "Error: unauthorized");
             } else if (gameName == null) {
                 throw new ResponseException(400, "Error: bad request");
             }
-            GameData game = createGameService.createGame(gameName, authToken);
+            GameData game = createGameService.createGame(gameName, authToken, whiteUsername, blackUsername);
             res.status(200);
             return gson.toJson(new CreateGameResponse(game.getGameID()));
         } catch (ResponseException ex) {
