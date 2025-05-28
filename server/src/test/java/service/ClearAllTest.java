@@ -28,7 +28,7 @@ public class ClearAllTest {
     @Test
     void clearAllTestPositive() throws ResponseException, DataAccessException {
         authDAO.addAuthToken(new AuthData("ghsjkh", "Feathers"));
-        int gameID = gameDAO.addGame("game");
+        int gameID = gameDAO.addGame("game", "feathers", "cheese");
         userDAO.addUser(new UserData("Feathers", "wowow", "chicken@gmail.com"));
         authDAO.deleteAllAuthTokens();
         gameDAO.deleteAllGames();

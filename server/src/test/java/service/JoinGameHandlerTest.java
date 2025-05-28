@@ -28,7 +28,7 @@ class JoinGameHandlerTest {
     void joinGameTestPositive() throws ResponseException, DataAccessException {
         AuthData token = new AuthData("ajkkjhjks", "Feathers McGraw");
         authDAO.addAuthToken(token);
-        int gameID = gameDAO.addGame("game");
+        int gameID = gameDAO.addGame("game", "feathers", "cheese");
         joinGameService.joinGame("ajkkjhjks", gameID, "WHITE");
         assertNotNull(gameID);
     }

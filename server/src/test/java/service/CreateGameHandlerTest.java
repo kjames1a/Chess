@@ -26,12 +26,12 @@ class CreateGameHandlerTest {
     void createGameTestPositive() throws ResponseException, DataAccessException {
         AuthData authData = new AuthData("jkhjkhj", "Feathers");
         authDAO.addAuthToken(authData);
-        GameData game = createGameService.createGame("game", authData.getAuthToken());
+        GameData game = createGameService.createGame("game", authData.getAuthToken(), "feathers", "cheese");
         assertEquals("game", game.getGameName());
     }
 
     @Test
     void createGameTestNegative() {
-        assertThrows(ResponseException.class, () -> createGameService.createGame("game", null));
+        assertThrows(ResponseException.class, () -> createGameService.createGame("game", null, "Feathers", "Cheese"));
     }
 }
