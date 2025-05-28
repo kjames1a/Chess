@@ -6,6 +6,8 @@ import dataaccess.UserDataAccess;
 import dataaccess.DataAccessException;
 import model.AuthData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.util.UUID;
 
 public class RegisterService {
@@ -34,12 +36,20 @@ public class RegisterService {
         } else if (username == null || password == null || email == null) {
             throw new ResponseException(400, "Error: bad request");
         }
-        String authToken = generateToken();
+        userData.setPassword("");
         userDataAccess.addUser(userData);
+        storeUserPassword(username, password);
+        String authToken = generateToken();
         AuthData authData = new AuthData(authToken, username);
         authDataAccess.addAuthToken(authData);
         return authData;
     }
+
+    void storeUserPassword(String username, String clearTextPassword) throws DataAccessException, ResponseException {
+        String hashedPassword = BCrypt.hashpw(clearTextPassword, BCrypt.gensalt());
+        userDataAccess.setPassword(username, hashedPassword);
+    }
+
 }
 
 
