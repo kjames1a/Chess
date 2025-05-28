@@ -1,6 +1,7 @@
 package dataaccess;
 
 import chess.ChessGame;
+import exceptions.ResponseException;
 import model.GameData;
 
 import java.util.Collection;
@@ -15,7 +16,15 @@ public class GameDAO implements GameDataAccess {
         return gameData.get(gameID);
     }
 
-    public int addGame(String gameName) {
+    public GameData update(GameData game) throws ResponseException{
+        if(gameData.get(game.getGameID()) == null) {
+            throw new ResponseException(400, "Error: Game not found");
+        }
+        gameData.put(game.getGameID(), game);
+        return game;
+    }
+
+    public int addGame(String gameName, String whiteUsername, String blackUsername) {
         int gameID = nextGameID++;
         GameData newGame = new GameData(gameID, null, null, gameName, new ChessGame());
         this.gameData.put(gameID, newGame);
