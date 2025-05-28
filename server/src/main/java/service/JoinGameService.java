@@ -31,11 +31,13 @@ public class JoinGameService {
                 throw new ResponseException(403, "Error: already taken");
             }
             gameData.setBlackUsername(username);
+            gameDataAccess.update(gameData);
         } else if (color.equals("WHITE")) {
             if (gameData.getWhiteUsername() != null) {
                 throw new ResponseException(403, "Error: already taken");
             }
             gameData.setWhiteUsername(username);
+            gameDataAccess.update(gameData);
         } else if (!color.equals("BLACK") && !color.equals("WHITE")) {
         throw new ResponseException(400, "Error: bad request");
         }
