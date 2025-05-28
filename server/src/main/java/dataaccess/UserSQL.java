@@ -20,7 +20,7 @@ public class UserSQL implements UserDataAccess {
 
     public UserData setPassword(String username, String hashedPassword) throws DataAccessException, ResponseException {
         var statement = "UPDATE userData SET password = ? WHERE username = ?";
-        executeUpdate(statement, hashedPassword, username);
+        ExecuteUpdate.executeUpdate(statement, hashedPassword, username);
         return getUser(username);
     }
 
@@ -44,7 +44,7 @@ public class UserSQL implements UserDataAccess {
     public UserData addUser(UserData userData) throws ResponseException, DataAccessException {
         var statement = "INSERT INTO userData (username, password, email, json) VALUES (?, ?, ?, ?)";
         var json = new Gson().toJson(userData);
-        executeUpdate(statement, userData.getUsername(), userData.getPassword(), userData.getEmail(), json);
+        ExecuteUpdate.executeUpdate(statement, userData.getUsername(), userData.getPassword(), userData.getEmail(), json);
         return new UserData(userData.getUsername(), userData.getPassword(), userData.getEmail());
     }
 
@@ -67,7 +67,7 @@ public class UserSQL implements UserDataAccess {
 
     public void deleteAllUsers() throws ResponseException, DataAccessException {
         var statement = "DELETE FROM userData";
-        executeUpdate(statement);
+        ExecuteUpdate.executeUpdate(statement);
     }
 
     private UserData readUsername(ResultSet rs) throws SQLException {
@@ -75,28 +75,6 @@ public class UserSQL implements UserDataAccess {
         var json = rs.getString("json");
         var user = new Gson().fromJson(json, UserData.class);
         return user.setUsername(id);
-    }
-
-    private int executeUpdate(String statement, Object... params) throws ResponseException, DataAccessException {
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param instanceof ModelType p) ps.setString(i + 1, p.toString());
-                    else if (param == null) ps.setNull(i + 1, NULL);
-                }
-                ps.executeUpdate();
-                var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-                return 0;
-            }
-        } catch (SQLException e) {
-            throw new ResponseException(500, String.format("Error: unable to update database: %s, %s", statement, e.getMessage()));
-        }
     }
 
     private final String[] createStatements = {

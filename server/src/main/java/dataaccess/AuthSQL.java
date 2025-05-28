@@ -14,6 +14,7 @@ import static java.sql.Types.NULL;
 
 public class AuthSQL implements AuthDataAccess {
 
+
     public AuthSQL() throws ResponseException, DataAccessException {
         configureDatabase();
     }
@@ -21,7 +22,7 @@ public class AuthSQL implements AuthDataAccess {
     public AuthData addAuthToken(AuthData authToken) throws ResponseException, DataAccessException {
         var statement = "INSERT INTO authData (authToken, username, json) VALUES (?, ?, ?)";
         var json = new Gson().toJson(authToken);
-        executeUpdate(statement, authToken.getAuthToken(), authToken.getUsername(), json);
+        ExecuteUpdate.executeUpdate(statement, authToken.getAuthToken(), authToken.getUsername(), json);
         return new AuthData(authToken.getAuthToken(), authToken.getUsername());
     }
 
@@ -44,12 +45,12 @@ public class AuthSQL implements AuthDataAccess {
 
     public void deleteAuthToken(String authToken) throws ResponseException, DataAccessException {
         var statement = "DELETE FROM authData WHERE authToken=?";
-        executeUpdate(statement, authToken);
+        ExecuteUpdate.executeUpdate(statement, authToken);
     }
 
     public void deleteAllAuthTokens() throws ResponseException, DataAccessException {
         var statement = "DELETE FROM authData";
-        executeUpdate(statement);
+        ExecuteUpdate.executeUpdate(statement);
     }
 
     private AuthData readAuthToken(ResultSet rs) throws SQLException {
@@ -57,28 +58,6 @@ public class AuthSQL implements AuthDataAccess {
         var json = rs.getString("json");
         var token = new Gson().fromJson(json, AuthData.class);
         return token.setAuthToken(authToken);
-    }
-
-    private int executeUpdate(String statement, Object... params) throws ResponseException, DataAccessException {
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param instanceof ModelType p) ps.setString(i + 1, p.toString());
-                    else if (param == null) ps.setNull(i + 1, NULL);
-                }
-                ps.executeUpdate();
-                var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-                return 0;
-            }
-        } catch (SQLException e) {
-            throw new ResponseException(500, String.format("Error: unable to update database: %s, %s", statement, e.getMessage()));
-        }
     }
 
     private final String[] createStatements = {

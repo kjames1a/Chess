@@ -14,7 +14,8 @@ public class CreateGameService {
         this.authDataAccess = authDataAccess;
     }
 
-    public GameData createGame(String gameName, String authToken, String whiteUsername, String blackUsername) throws ResponseException, DataAccessException {
+    public GameData createGame(String gameName, String authToken, String whiteUsername, String blackUsername)
+            throws ResponseException, DataAccessException {
         AuthData authData = authDataAccess.getAuthToken(authToken);
         if (authData == null) {
             throw new ResponseException(401, "Error: Unauthorized");
