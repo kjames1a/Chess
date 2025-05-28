@@ -23,15 +23,11 @@ public class UserData {
         return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public UserData setUsername(String username) {
+        return new UserData(username, password, email);
     }
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 }
