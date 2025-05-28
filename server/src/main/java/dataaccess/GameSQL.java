@@ -19,7 +19,7 @@ public class GameSQL implements GameDataAccess {
 
 
     public GameSQL() throws ResponseException, DataAccessException {
-        configureDatabase();
+        DataAccessHelper.configureDatabase(createStatements);
     }
 
 
@@ -29,7 +29,7 @@ public class GameSQL implements GameDataAccess {
         GameData gameData = new GameData(0, whiteUsername, blackUsername, gameName, chessGame);
         var gameJSON = new Gson().toJson(chessGame);
         var json = new Gson().toJson(gameData);
-        return ExecuteUpdate.executeUpdate(statement, whiteUsername, blackUsername, gameName, gameJSON, json);
+        return DataAccessHelper.executeUpdate(statement, whiteUsername, blackUsername, gameName, gameJSON, json);
     }
 
     public GameData getGame(int id) throws ResponseException {
@@ -92,7 +92,7 @@ public class GameSQL implements GameDataAccess {
 
     public void deleteAllGames() throws ResponseException, DataAccessException {
         var statement = "DELETE FROM gameData";
-        ExecuteUpdate.executeUpdate(statement);
+        DataAccessHelper.executeUpdate(statement);
     }
 
     private GameData readGame(ResultSet rs) throws SQLException {
@@ -117,18 +117,4 @@ public class GameSQL implements GameDataAccess {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
-
-
-    private void configureDatabase() throws ResponseException, DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new ResponseException(500, String.format("Error: Unable to configure database: %s", ex.getMessage()));
-        }
-    }
 }

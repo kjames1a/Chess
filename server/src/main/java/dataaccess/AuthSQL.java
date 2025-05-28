@@ -16,13 +16,13 @@ public class AuthSQL implements AuthDataAccess {
 
 
     public AuthSQL() throws ResponseException, DataAccessException {
-        configureDatabase();
+        DataAccessHelper.configureDatabase(createStatements);
     }
 
     public AuthData addAuthToken(AuthData authToken) throws ResponseException, DataAccessException {
         var statement = "INSERT INTO authData (authToken, username, json) VALUES (?, ?, ?)";
         var json = new Gson().toJson(authToken);
-        ExecuteUpdate.executeUpdate(statement, authToken.getAuthToken(), authToken.getUsername(), json);
+        DataAccessHelper.executeUpdate(statement, authToken.getAuthToken(), authToken.getUsername(), json);
         return new AuthData(authToken.getAuthToken(), authToken.getUsername());
     }
 
@@ -45,12 +45,12 @@ public class AuthSQL implements AuthDataAccess {
 
     public void deleteAuthToken(String authToken) throws ResponseException, DataAccessException {
         var statement = "DELETE FROM authData WHERE authToken=?";
-        ExecuteUpdate.executeUpdate(statement, authToken);
+        DataAccessHelper.executeUpdate(statement, authToken);
     }
 
     public void deleteAllAuthTokens() throws ResponseException, DataAccessException {
         var statement = "DELETE FROM authData";
-        ExecuteUpdate.executeUpdate(statement);
+        DataAccessHelper.executeUpdate(statement);
     }
 
     private AuthData readAuthToken(ResultSet rs) throws SQLException {
@@ -71,17 +71,4 @@ public class AuthSQL implements AuthDataAccess {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
-
-    private void configureDatabase() throws ResponseException, DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new ResponseException(500, String.format("Error: Unable to configure database: %s", ex.getMessage()));
-        }
-    }
 }

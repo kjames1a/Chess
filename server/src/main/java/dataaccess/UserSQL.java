@@ -15,12 +15,12 @@ import static java.sql.Types.NULL;
 public class UserSQL implements UserDataAccess {
 
     public UserSQL() throws ResponseException, DataAccessException {
-        configureDatabase();
+        DataAccessHelper.configureDatabase(createStatements);
     }
 
     public UserData setPassword(String username, String hashedPassword) throws DataAccessException, ResponseException {
         var statement = "UPDATE userData SET password = ? WHERE username = ?";
-        ExecuteUpdate.executeUpdate(statement, hashedPassword, username);
+        DataAccessHelper.executeUpdate(statement, hashedPassword, username);
         return getUser(username);
     }
 
@@ -44,7 +44,7 @@ public class UserSQL implements UserDataAccess {
     public UserData addUser(UserData userData) throws ResponseException, DataAccessException {
         var statement = "INSERT INTO userData (username, password, email, json) VALUES (?, ?, ?, ?)";
         var json = new Gson().toJson(userData);
-        ExecuteUpdate.executeUpdate(statement, userData.getUsername(), userData.getPassword(), userData.getEmail(), json);
+        DataAccessHelper.executeUpdate(statement, userData.getUsername(), userData.getPassword(), userData.getEmail(), json);
         return new UserData(userData.getUsername(), userData.getPassword(), userData.getEmail());
     }
 
@@ -67,7 +67,7 @@ public class UserSQL implements UserDataAccess {
 
     public void deleteAllUsers() throws ResponseException, DataAccessException {
         var statement = "DELETE FROM userData";
-        ExecuteUpdate.executeUpdate(statement);
+        DataAccessHelper.executeUpdate(statement);
     }
 
     private UserData readUsername(ResultSet rs) throws SQLException {
@@ -90,17 +90,4 @@ public class UserSQL implements UserDataAccess {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
-
-    private void configureDatabase() throws ResponseException, DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new ResponseException(500, String.format("Error: Unable to configure database: %s", ex.getMessage()));
-        }
-    }
 }
