@@ -31,7 +31,9 @@ class RegisterTest {
     }
 
     @Test
-    void registerTestNegative() {
-        assertThrows(ResponseException.class, () -> registerService.register(null));
+    void registerTestNegative() throws ResponseException, DataAccessException {
+        UserData user = new UserData("Shawn", "sheep", "sheeeep1@gmail.com");
+        registerService.register(user);
+        assertThrows(ResponseException.class, () -> registerService.register(user));
     }
 }

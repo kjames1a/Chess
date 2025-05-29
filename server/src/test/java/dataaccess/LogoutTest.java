@@ -31,6 +31,6 @@ class LogoutTest {
 
     @Test
     void logoutTestNegative() {
-        assertThrows(ResponseException.class, () -> logoutService.logout(null));
+        assertThrows(ResponseException.class, () -> logoutService.logout("bad token"));
     }
 }

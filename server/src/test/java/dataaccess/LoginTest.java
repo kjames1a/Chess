@@ -26,12 +26,12 @@ class LoginTest {
 
     @Test
     void loginTestPositive() throws ResponseException, DataAccessException {
-        String hashedPassword = BCrypt.hashpw("cheese", BCrypt.gensalt());
-        UserData userInfo = new UserData("Feathers McGraw", hashedPassword, "Chicken@gmail.com");
+        String hashedPassword = BCrypt.hashpw("sheep", BCrypt.gensalt());
+        UserData userInfo = new UserData("Feathers", hashedPassword, "cheese@gmail.com");
         userSQL.addUser(userInfo);
-        UserData login = new UserData("Feathers McGraw", "cheese", "Chicken@gmail.com");
+        UserData login = new UserData("Feathers", "sheep", "cheese@gmail.com");
         AuthData authToken = loginService.login(login);
-        assertEquals("Feathers McGraw", authToken.getUsername());
+        assertEquals("Feathers", authToken.getUsername());
     }
 
     @Test

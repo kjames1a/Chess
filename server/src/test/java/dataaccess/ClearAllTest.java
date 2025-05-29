@@ -26,14 +26,14 @@ public class ClearAllTest {
 
     @Test
     void clearAllTestPositive() throws ResponseException, DataAccessException {
-        authSQL.addAuthToken(new AuthData("ghsjkh", "Feathers"));
-        int gameID = gameSQL.addGame("game", "feathers", "cheese");
-        userSQL.addUser(new UserData("Feathers", "wowow", "chicken@gmail.com"));
+        authSQL.addAuthToken(new AuthData("ghsjkh", "Gromit"));
+        int gameID = gameSQL.addGame("game", "wallace", "cheese");
+        userSQL.addUser(new UserData("Gromit", "wowow", "gromit1@gmail.com"));
         authSQL.deleteAllAuthTokens();
         gameSQL.deleteAllGames();
         userSQL.deleteAllUsers();
         assertNull(authSQL.getAuthToken("ghsjkh"));
-        assertNull(userSQL.getUser("Feathers"));
+        assertNull(userSQL.getUser("Gromit"));
         assertNull(gameSQL.getGame(gameID));
     }
 

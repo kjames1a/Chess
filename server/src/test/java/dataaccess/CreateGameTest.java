@@ -1,9 +1,11 @@
 package dataaccess;
 
+import chess.ChessGame;
 import dataaccess.*;
 import exceptions.ResponseException;
 import model.AuthData;
 import model.GameData;
+import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.CreateGameService;
@@ -26,14 +28,14 @@ class CreateGameTest {
 
     @Test
     void createGameTestPositive() throws ResponseException, DataAccessException {
-        AuthData authData = new AuthData("jkhjkhj", "Feathers");
+        AuthData authData = new AuthData("jkhjkhj", "Gromit");
         authSQL.addAuthToken(authData);
-        GameData game = createGameService.createGame("game", authData.getAuthToken(), "feathers", "cheese");
-        assertEquals("game", game.getGameName());
+        GameData game = createGameService.createGame("chess", authData.getAuthToken(), "mong", "shawn");
+        assertEquals("chess", game.getGameName());
     }
 
     @Test
     void createGameTestNegative() {
-        assertThrows(ResponseException.class, () -> createGameService.createGame("game", null, "Feathers", "Cheese"));
+        assertThrows(ResponseException.class, () -> createGameService.createGame("game", null, null, null));
     }
 }
