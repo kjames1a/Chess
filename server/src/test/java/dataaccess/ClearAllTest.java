@@ -5,14 +5,20 @@ import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import service.ClearService;
+import service.CreateGameService;
+import service.LoginService;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class ClearAllTest {
     private AuthSQL authSQL;
     private GameSQL gameSQL;
     private UserSQL userSQL;
+    private ClearService clearService;
+
 
     @BeforeEach
     void setup() throws ResponseException, DataAccessException{
@@ -22,6 +28,7 @@ public class ClearAllTest {
         authSQL.deleteAllAuthTokens();
         gameSQL.deleteAllGames();
         userSQL.deleteAllUsers();
+        clearService = new ClearService(authSQL, userSQL, gameSQL);
     }
 
     @Test
@@ -35,6 +42,12 @@ public class ClearAllTest {
         assertNull(authSQL.getAuthToken("ghsjkh"));
         assertNull(userSQL.getUser("Gromit"));
         assertNull(gameSQL.getGame(gameID));
+    }
+
+    @Test
+    void clearAllTestNegative() {
+        ClearService clearAll = new ClearService(null, null, null);
+        assertThrows(ResponseException.class, () -> clearAll.clear());
     }
 
 

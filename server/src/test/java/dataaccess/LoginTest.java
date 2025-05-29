@@ -22,6 +22,8 @@ class LoginTest {
         userSQL = new UserSQL();
         authSQL = new AuthSQL();
         loginService = new LoginService(userSQL, authSQL);
+        userSQL.deleteAllUsers();
+        authSQL.deleteAllAuthTokens();
     }
 
     @Test
