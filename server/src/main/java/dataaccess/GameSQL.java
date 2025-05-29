@@ -108,9 +108,9 @@ public class GameSQL implements GameDataAccess {
             """
             CREATE TABLE IF NOT EXISTS gameData (
               `id` int NOT NULL AUTO_INCREMENT,
-              `whiteUsername` varchar(256) NOT NULL,
-              `blackUsername` varchar(256) NOT NULL,
-              `gameName` varchar(256) NOT NUll,
+              `whiteUsername` varchar(256) NULL,
+              `blackUsername` varchar(256) NULL,
+              `gameName` varchar(256) NUll,
               `game` TEXT DEFAULT NULL,
               `json` TEXT DEFAULT NULL,
               PRIMARY KEY (`id`)
