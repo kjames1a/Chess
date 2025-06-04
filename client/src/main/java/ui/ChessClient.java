@@ -31,11 +31,11 @@ public class ChessClient {
             return switch (cmd) {
                 case "register", "r" -> register(params);
                 case "signIn", "s" -> signIn(params);
-                case "list", "l" -> listGames();
+                case "list", "l" -> listGames(params);
                 case "create", "c" -> createGame(params);
                 case "join", "j" -> joinGame(params);
                 case "watch", "w" -> watchGame(params);
-                case "logout" -> logOut();
+                case "logout" -> logOut(params);
                 case "quit", "q" -> "quit";
                 case "help", "h" -> help();
                 default -> " ";
@@ -52,6 +52,9 @@ public class ChessClient {
             var email = params[2];
             var registeredUser = new UserData(userName, password, email);
             authData = server.createUser(registeredUser);
+            if (state == State.SIGNEDIN) {
+                throw new ResponseException(400, "Already logged in. Please logout to reregister.");
+            }
             state = State.SIGNEDIN;
             return String.format("You registered as %s", authData.getUsername());
         }
@@ -64,6 +67,9 @@ public class ChessClient {
             var password = params[1];
             var user = new UserData(userName, password, null);
             authData = server.loginUser(user);
+            if (state == State.SIGNEDIN) {
+                throw new ResponseException(400, "Already logged in. Please logout to log back in.");
+            }
             state = State.SIGNEDIN;
             return String.format("You signed in as %s.", authData.getUsername());
         }
@@ -82,28 +88,30 @@ public class ChessClient {
         throw new ResponseException(400, "Expected: <gameName>");
     }
 
-    public String listGames() throws ResponseException {
+    public String listGames(String... params) throws ResponseException {
         assertSignedIn();
-        Collection<GameData> games = server.listGames(authData.getAuthToken());
-        var result = new StringBuilder();
-        if (games.isEmpty()) {
-            throw new ResponseException(400, "No games have been created");
-        }
-        for (var game : games) {
-            var gameName = game.getGameName();
-            var gameID = game.getGameID();
-            var whiteUser = game.getWhiteUsername();
-            var blackUser = game.getBlackUsername();
-            if (whiteUser == null) {
-                whiteUser = "No white player";
+        if (params.length == 0) {
+            Collection<GameData> games = server.listGames(authData.getAuthToken());
+            var result = new StringBuilder();
+            if (games.isEmpty()) {
+                throw new ResponseException(400, "No games have been created");
             }
-            if (blackUser == null) {
-                blackUser = "No black player";
+            for (var game : games) {
+                var gameName = game.getGameName();
+                var gameID = game.getGameID();
+                var whiteUser = game.getWhiteUsername();
+                var blackUser = game.getBlackUsername();
+                if (whiteUser == null) {
+                    whiteUser = "No white player";
+                }
+                if (blackUser == null) {
+                    blackUser = "No black player";
+                }
+                result.append(String.format("%s. Game Name: %s | White Username: %s | Black Username: %s \n",
+                        gameID, gameName, whiteUser, blackUser));
             }
-            result.append(String.format("%s. Game Name: %s | White Username: %s | Black Username: %s \n",
-                    gameID, gameName, whiteUser, blackUser));
-        }
-        return result.toString();
+            return result.toString();
+        } throw new ResponseException(400, "Expected: l or list");
     }
 
     public String joinGame(String... params) throws ResponseException {
@@ -119,6 +127,9 @@ public class ChessClient {
                         joinGame = game;
                         break;
                     }
+                }
+                if (joinGame == null) {
+                    throw new ResponseException(400, "Error: That game ID does not exist.");
                 }
                 var joinedGame = new JoinData(gameID, playerColor, joinGame.getGameName());
                 server.joinGame(joinedGame, authData.getAuthToken());
@@ -147,7 +158,7 @@ public class ChessClient {
                 }
             }
             if (gameName == null) {
-                throw new ResponseException(400, "Game has yet to be created");
+                throw new ResponseException(400, "Error: That game ID does not exist.");
             }
             var joinedGame = new JoinData(gameID, null, gameName.getGameName());
             server.watchGame(joinedGame, authData.getAuthToken());
@@ -157,11 +168,14 @@ public class ChessClient {
         throw new ResponseException(400, "Expected <game id>");
     }
 
-    public String logOut() throws ResponseException {
+    public String logOut(String... params) throws ResponseException {
         assertSignedIn();
-        server.logoutUser(authData.getAuthToken());
-        state = State.SIGNEDOUT;
-        return String.format("%s logged out", authData.getUsername());
+        if (params.length == 0) {
+            server.logoutUser(authData.getAuthToken());
+            state = State.SIGNEDOUT;
+            return String.format("%s logged out", authData.getUsername());
+        }
+        throw new ResponseException(400, "Expected: <logout>");
     }
 
     public String help() {
