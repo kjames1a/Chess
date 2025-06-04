@@ -24,7 +24,7 @@ class ListGameHandler {
         try {
             String authToken = req.headers("Authorization");
             if (authToken == null) {
-                return gson.toJson(new ErrorResponse(401, "Error: Unauthorized"));
+                throw new ResponseException(401, "Error: Unauthorized");
             }
             Collection<GameData> gameData = listGameService.listGames(authToken);
             res.status(200);
