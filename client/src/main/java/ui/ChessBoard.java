@@ -4,7 +4,7 @@ public class ChessBoard {
     private String[][] squares = new String[8][8];
 
     public void ChessBoardWhite() {
-        whitePerspective();
+        chessPieces();
         colLettersWhite();
         for (int row = 7; row >= 0; row--) {
             System.out.print((row + 1 + " "));
@@ -13,7 +13,7 @@ public class ChessBoard {
     }
 
     public void ChessBoardBlack() {
-        blackPerspective();
+        chessPieces();
         colLettersBlack();
         for (int row = 0; row <= 7; row++) {
             System.out.print((row + 1 + " "));
@@ -89,7 +89,7 @@ public class ChessBoard {
         System.out.println(EscapeSequences.RESET_BG_COLOR);
     }
 
-    public void whitePerspective() {
+    public void chessPieces() {
         for (int col = 0; col < 8; col++) {
             squares[1][col] = EscapeSequences.WHITE_PAWN;
         }
@@ -113,32 +113,6 @@ public class ChessBoard {
         squares[7][5] = EscapeSequences.BLACK_BISHOP;
         squares[7][6] = EscapeSequences.BLACK_KNIGHT;
         squares[7][7] = EscapeSequences.BLACK_ROOK;
-    }
-
-    public void blackPerspective() {
-        for (int col = 0; col < 8; col++) {
-            squares[1][col] = EscapeSequences.BLACK_PAWN;
-        }
-        squares[0][0] = EscapeSequences.BLACK_ROOK;
-        squares[0][1] = EscapeSequences.BLACK_KNIGHT;
-        squares[0][2] = EscapeSequences.BLACK_BISHOP;
-        squares[0][3] = EscapeSequences.BLACK_QUEEN;
-        squares[0][4] = EscapeSequences.BLACK_KING;
-        squares[0][5] = EscapeSequences.BLACK_BISHOP;
-        squares[0][6] = EscapeSequences.BLACK_KNIGHT;
-        squares[0][7] = EscapeSequences.BLACK_ROOK;
-
-        for (int col = 0; col < 8; col++) {
-            squares[6][col] = EscapeSequences.WHITE_PAWN;
-        }
-        squares[7][0] = EscapeSequences.WHITE_ROOK;
-        squares[7][1] = EscapeSequences.WHITE_KNIGHT;
-        squares[7][2] = EscapeSequences.WHITE_BISHOP;
-        squares[7][3] = EscapeSequences.WHITE_QUEEN;
-        squares[7][4] = EscapeSequences.WHITE_KING;
-        squares[7][5] = EscapeSequences.WHITE_BISHOP;
-        squares[7][6] = EscapeSequences.WHITE_KNIGHT;
-        squares[7][7] = EscapeSequences.WHITE_ROOK;
     }
 }
 
