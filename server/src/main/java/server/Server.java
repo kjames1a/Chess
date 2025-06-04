@@ -18,6 +18,7 @@ public class Server {
     private CreateGameHandler createGameHandler;
     private ListGameHandler listGameHandler;
     private JoinGameHandler joinGameHandler;
+    private WatchGameHandler watchGameHandler;
 
 
     public Server() {
@@ -31,6 +32,7 @@ public class Server {
             this.createGameHandler = new CreateGameHandler(gameSQL, authSQL);
             this.listGameHandler = new ListGameHandler(gameSQL, authSQL);
             this.joinGameHandler = new JoinGameHandler(gameSQL, authSQL);
+            this.watchGameHandler = new WatchGameHandler(gameSQL, authSQL);
         } catch (ResponseException | DataAccessException ex) {
             throw new RuntimeException("Server failed", ex);
         }
@@ -54,6 +56,8 @@ public class Server {
         Spark.get("/game", listGameHandler::handle);
 
         Spark.put("/game", joinGameHandler::handle);
+
+        Spark.get("/game/:gameID", watchGameHandler::handle);
 
         Spark.exception(ResponseException.class, this::exceptionHandler);
 
