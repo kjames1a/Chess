@@ -1,6 +1,5 @@
 package server;
 
-import chess.ChessGame;
 import exceptions.ErrorResponse;
 import com.google.gson.Gson;
 import dataaccess.*;
