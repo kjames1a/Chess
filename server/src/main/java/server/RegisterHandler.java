@@ -36,10 +36,10 @@ public class RegisterHandler {
             return gson.toJson(authData);
         } catch (ResponseException ex) {
             res.status(ex.statusCode());
-            return gson.toJson(new ErrorResponse(ex.getMessage()));
+            return gson.toJson(new ErrorResponse(ex.statusCode(), ex.getMessage()));
         } catch (DataAccessException ex) {
             res.status(500);
-            return gson.toJson(new ErrorResponse(ex.getMessage()));
+            return gson.toJson(new ErrorResponse(500, ex.getMessage()));
         }
     }
     public record RegisterRequest(String username, String password, String email) {}

@@ -26,10 +26,10 @@ class LogoutHandler {
             return "{}";
         } catch (ResponseException ex) {
             res.status(ex.statusCode());
-            return gson.toJson(new ErrorResponse(ex.getMessage()));
+            return gson.toJson(new ErrorResponse(ex.statusCode(), ex.getMessage()));
         } catch (Exception ex) {
             res.status(500);
-            return gson.toJson(new ErrorResponse(ex.getMessage()));
+            return gson.toJson(new ErrorResponse(500, ex.getMessage()));
         }
     }
 }

@@ -21,7 +21,7 @@ class CreateGameHandler {
         Gson gson = new Gson();
         try {
             GameData gameData = gson.fromJson(req.body(), GameData.class);
-            String authToken = req.headers("authorization");
+            String authToken = req.headers("Authorization");
             String gameName = gameData.getGameName();
             String whiteUsername = gameData.getWhiteUsername();
             String blackUsername = gameData.getBlackUsername();
@@ -35,10 +35,10 @@ class CreateGameHandler {
             return gson.toJson(new CreateGameResponse(game.getGameID()));
         } catch (ResponseException ex) {
             res.status(ex.statusCode());
-            return gson.toJson(new ErrorResponse(ex.getMessage()));
+            return gson.toJson(new ErrorResponse(ex.statusCode(), ex.getMessage()));
         } catch (DataAccessException ex) {
             res.status(500);
-            return gson.toJson(new ErrorResponse(ex.getMessage()));
+            return gson.toJson(new ErrorResponse(500, ex.getMessage()));
         }
     }
     record CreateGameResponse(int gameID) {}

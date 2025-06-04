@@ -23,18 +23,18 @@ class JoinGameHandler {
         Gson gson = new Gson();
         try {
             JoinData joinData = gson.fromJson(req.body(), JoinData.class);
-            String authToken = req.headers("authorization");
+            String authToken = req.headers("Authorization");
             int gameID = joinData.getGameID();
-            String playerColor = joinData.getTeamColor();
+            String playerColor = joinData.getPlayerColor();
             GameData game = joinGameService.joinGame(authToken, gameID, playerColor);
             res.status(200);
             return gson.toJson(new CreateGameResponse(game.getGameID()));
         } catch (ResponseException ex) {
             res.status(ex.statusCode());
-            return gson.toJson(new ErrorResponse(ex.getMessage()));
+            return gson.toJson(new ErrorResponse(ex.statusCode(), ex.getMessage()));
         } catch (DataAccessException ex) {
             res.status(500);
-            return gson.toJson(new ErrorResponse(ex.getMessage()));
+            return gson.toJson(new ErrorResponse(500, ex.getMessage()));
         }
     }
     record CreateGameResponse(int gameID) {}
