@@ -101,7 +101,6 @@ public class GameSQL implements GameDataAccess {
     }
 
     private final String[] createStatements = {
-            "DROP TABLE IF EXISTS gameData",
             """
             CREATE TABLE IF NOT EXISTS gameData (
               `gameID` int NOT NULL AUTO_INCREMENT,
