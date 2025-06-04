@@ -15,7 +15,7 @@ public class JoinGameService {
         this.authDataAccess = authDataAccess;
     }
 
-    public GameData joinGame(String authToken, int gameID, String color) throws ResponseException, DataAccessException {
+    public GameData joinGame(String authToken, int gameID, String playerColor) throws ResponseException, DataAccessException {
         AuthData authData = authDataAccess.getAuthToken(authToken);
         GameData gameData = gameDataAccess.getGame(gameID);
         if (authData == null) {
@@ -24,22 +24,22 @@ public class JoinGameService {
             throw new ResponseException(400, "Error: bad request");
         }
         String username = authData.getUsername();
-        if (color == null) {
-            throw new ResponseException(400, "Error: bad request");
-        } else if (color.equals("BLACK")) {
+        if (playerColor == null) {
+            throw new ResponseException(400, "Error: Please choose between the colors white or black");
+        } else if (playerColor.equals("BLACK")) {
             if (gameData.getBlackUsername() != null) {
                 throw new ResponseException(403, "Error: already taken");
             }
             gameData.setBlackUsername(username);
             gameDataAccess.update(gameData);
-        } else if (color.equals("WHITE")) {
+        } else if (playerColor.equals("WHITE")) {
             if (gameData.getWhiteUsername() != null) {
                 throw new ResponseException(403, "Error: already taken");
             }
             gameData.setWhiteUsername(username);
             gameDataAccess.update(gameData);
-        } else if (!color.equals("BLACK") && !color.equals("WHITE")) {
-        throw new ResponseException(400, "Error: bad request");
+        } else if (!playerColor.equals("BLACK") || !playerColor.equals("WHITE")) {
+        throw new ResponseException(400, "Error: Please choose between the colors white or black");
         }
         return gameData;
     }
