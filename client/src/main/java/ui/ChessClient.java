@@ -160,6 +160,7 @@ public class ChessClient {
 
     public String logOut() throws ResponseException {
         assertSignedIn();
+        server.logoutUser(authData.getAuthToken());
         state = State.SIGNEDOUT;
         return String.format("%s logged out", authData.getUsername());
     }
