@@ -21,6 +21,10 @@ public class GameData {
         return gameID;
     }
 
+    public GameData setGameName(String gameName) {
+        return new GameData(gameID, whiteUsername, blackUsername, gameName, game);
+    }
+
     public GameData setID(int gameID) {
         return new GameData(gameID, whiteUsername, blackUsername, gameName, game);
     }

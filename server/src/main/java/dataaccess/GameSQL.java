@@ -3,16 +3,10 @@ package dataaccess;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import exceptions.ResponseException;
-import dataaccess.DataAccessException;
 import model.GameData;
-import model.ModelType;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.sql.*;
-
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
 
 
 public class GameSQL implements GameDataAccess {
@@ -34,7 +28,7 @@ public class GameSQL implements GameDataAccess {
 
     public GameData getGame(int id) throws ResponseException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT id, whiteUsername, blackUsername, gameName, json FROM gameData WHERE id=?";
+            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, json FROM gameData WHERE gameID=?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setInt(1, id);
                 try (var rs = ps.executeQuery()) {
@@ -51,7 +45,7 @@ public class GameSQL implements GameDataAccess {
 
     public GameData update(GameData game) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "UPDATE gameData SET whiteUsername = ?, blackUsername = ? WHERE id = ?";
+            var statement = "UPDATE gameData SET whiteUsername = ?, blackUsername = ? WHERE gameID = ?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1, game.getWhiteUsername());
                 ps.setString(2, game.getBlackUsername());
@@ -76,7 +70,7 @@ public class GameSQL implements GameDataAccess {
     public Collection<GameData> listGame() throws ResponseException {
         var result = new ArrayList<GameData>();
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT id, whiteUsername, blackUsername, json FROM gameData";
+            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, json FROM gameData";
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
                     while (rs.next()) {
@@ -96,24 +90,27 @@ public class GameSQL implements GameDataAccess {
     }
 
     private GameData readGame(ResultSet rs) throws SQLException {
-        var id = rs.getInt("id");
+        var gameID = rs.getInt("gameID");
         var json = rs.getString("json");
+        var gameName = rs.getString("gameName");
         var game = new Gson().fromJson(json, GameData.class);
         game.setWhiteUsername(rs.getString("whiteUsername"));
         game.setBlackUsername(rs.getString("blackUsername"));
-        return game.setID(id);
+        game.setGameName(gameName);
+        return game.setID(gameID);
     }
 
     private final String[] createStatements = {
+            "DROP TABLE IF EXISTS gameData",
             """
             CREATE TABLE IF NOT EXISTS gameData (
-              `id` int NOT NULL AUTO_INCREMENT,
+              `gameID` int NOT NULL AUTO_INCREMENT,
               `whiteUsername` varchar(256) NULL,
               `blackUsername` varchar(256) NULL,
               `gameName` varchar(256) NUll,
               `game` TEXT DEFAULT NULL,
               `json` TEXT DEFAULT NULL,
-              PRIMARY KEY (`id`)
+              PRIMARY KEY (`gameID`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
