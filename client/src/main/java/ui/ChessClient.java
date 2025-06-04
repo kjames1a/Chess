@@ -6,7 +6,6 @@ import java.util.Set;
 import chess.ChessGame;
 import model.*;
 import exceptions.ResponseException;
-import server.ServerFacade;
 
 public class ChessClient {
     private AuthData authData;
@@ -124,9 +123,9 @@ public class ChessClient {
                 var joinedGame = new JoinData(gameID, playerColor, joinGame.getGameName());
                 server.joinGame(joinedGame, authData.getAuthToken());
                 if (playerColor.equals("WHITE")) {
-                    new ChessBoard().ChessBoardWhite();
+                    new ChessBoard().chessBoardWhite();
                 } else {
-                    new ChessBoard().ChessBoardBlack();
+                    new ChessBoard().chessBoardBlack();
                 }
                 return String.format("Joined game %s as %s team", joinGame.getGameName(), playerColor);
             } catch (NumberFormatException ignored) {
@@ -152,7 +151,7 @@ public class ChessClient {
             }
             var joinedGame = new JoinData(gameID, null, gameName.getGameName());
             server.watchGame(joinedGame, authData.getAuthToken());
-            new ChessBoard().ChessBoardWhite();
+            new ChessBoard().chessBoardWhite();
             return String.format("Watching game %s", gameName.getGameName());
         }
         throw new ResponseException(400, "Expected <game id>");

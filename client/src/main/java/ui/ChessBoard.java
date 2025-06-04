@@ -3,7 +3,7 @@ package ui;
 public class ChessBoard {
     private String[][] squares = new String[8][8];
 
-    public void ChessBoardWhite() {
+    public void chessBoardWhite() {
         chessPieces();
         colLettersWhite();
         for (int row = 7; row >= 0; row--) {
@@ -12,7 +12,7 @@ public class ChessBoard {
         }
     }
 
-    public void ChessBoardBlack() {
+    public void chessBoardBlack() {
         chessPieces();
         colLettersBlack();
         for (int row = 0; row <= 7; row++) {
