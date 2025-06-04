@@ -147,6 +147,9 @@ public class ChessClient {
                     break;
                 }
             }
+            if (gameName == null) {
+                throw new ResponseException(400, "Game has yet to be created");
+            }
             var joinedGame = new JoinData(gameID, null, gameName.getGameName());
             server.watchGame(joinedGame, authData.getAuthToken());
             new ChessBoard().ChessBoardWhite();
