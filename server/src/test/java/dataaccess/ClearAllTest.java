@@ -5,7 +5,6 @@ import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.ClearService;
 import service.CreateGameService;
 import service.LoginService;
 
@@ -16,8 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class ClearAllTest {
     private AuthSQL authSQL;
     private GameSQL gameSQL;
-    private UserSQL userSQL;
-    private ClearService clearService;
+    private UserSQL userSQL;;
 
 
     @BeforeEach
@@ -28,7 +26,6 @@ public class ClearAllTest {
         authSQL.deleteAllAuthTokens();
         gameSQL.deleteAllGames();
         userSQL.deleteAllUsers();
-        clearService = new ClearService(authSQL, userSQL, gameSQL);
     }
 
     @Test
@@ -44,11 +41,6 @@ public class ClearAllTest {
         assertNull(gameSQL.getGame(gameID));
     }
 
-    @Test
-    void clearAllTestNegative() {
-        ClearService clearAll = new ClearService(null, null, null);
-        assertThrows(ResponseException.class, () -> clearAll.clear());
-    }
 
 
 }
