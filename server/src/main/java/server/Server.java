@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dataaccess.*;
 import exceptions.ResponseException;
 import dataaccess.DataAccessException;
+import server.websocket.WebSocketHandler;
 import spark.*;
 
 import java.util.Map;
@@ -19,6 +20,7 @@ public class Server {
     private ListGameHandler listGameHandler;
     private JoinGameHandler joinGameHandler;
     private WatchGameHandler watchGameHandler;
+    private final WebSocketHandler webSocketHandler;
 
 
     public Server() {
@@ -33,6 +35,7 @@ public class Server {
             this.listGameHandler = new ListGameHandler(gameSQL, authSQL);
             this.joinGameHandler = new JoinGameHandler(gameSQL, authSQL);
             this.watchGameHandler = new WatchGameHandler(gameSQL, authSQL);
+            webSocketHandler = new WebSocketHandler();
         } catch (ResponseException | DataAccessException ex) {
             throw new RuntimeException("Server failed", ex);
         }
@@ -42,6 +45,8 @@ public class Server {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
+
+        Spark.webSocket("/ws", webSocketHandler);
 
         Spark.post("/session", loginHandler::handle);
 
