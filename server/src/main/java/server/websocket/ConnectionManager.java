@@ -6,6 +6,8 @@ import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionManager {
@@ -20,7 +22,7 @@ public class ConnectionManager {
         connections.remove(visitorName);
     }
 
-    public void broadcast(String excludeVisitorName, NotificationMessage notification) throws IOException {
+    public void serverBroadcast(String excludeVisitorName, String notification) throws IOException {
         var removeList = new ArrayList<Connection>();
         for (var c : connections.values()) {
             if (c.session.isOpen()) {
@@ -34,5 +36,5 @@ public class ConnectionManager {
         for (var c : removeList) {
             connections.remove(c.userName);
         }
-        }
+    }
 }
