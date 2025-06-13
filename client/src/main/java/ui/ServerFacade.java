@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessMove;
 import com.google.gson.Gson;
 import exceptions.ResponseException;
 import model.AuthData;
@@ -56,6 +57,21 @@ public class ServerFacade {
     public GameData watchGame(JoinData game, String authToken) throws ResponseException {
         var path = "/game";
         return this.makeRequest("GET", path, game, GameData.class, authToken);
+    }
+
+    public GameData makeMove(int gameID, String authToken) throws ResponseException {
+        var path = "/game";
+        return this.makeRequest("PUT", path, gameID, GameData.class, authToken);
+    }
+
+    public void leave(int gameID, String authToken) throws ResponseException {
+        var path = "/session";
+        this.makeRequest("PUT", path, gameID, GameData.class, authToken);
+    }
+
+    public GameData resign(int gameID, String authToken) throws ResponseException {
+        var path ="/session";
+        return this.makeRequest("PUT", path, gameID, GameData.class, authToken);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {

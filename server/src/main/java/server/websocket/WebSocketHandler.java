@@ -230,10 +230,10 @@ public class WebSocketHandler {
             int gameID = resignCommand.getGameID();
             GameData gameData = gameDataHelper(gameID);
             if (!userName.equals(gameData.getBlackUsername()) && !userName.equals(gameData.getWhiteUsername())) {
-                ServerMessage observerErrorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-                observerErrorMessage.setErrorMessage("Error: Observers cannot resign from the game.");
+                ServerMessage observerResignErrorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+                observerResignErrorMessage.setErrorMessage("Error: Observers cannot resign from the game.");
                 Connection connection = new Connection(userName, session);
-                String loadMessage = new Gson().toJson(observerErrorMessage);
+                String loadMessage = new Gson().toJson(observerResignErrorMessage);
                 connection.send(loadMessage);
                 return;
             }
