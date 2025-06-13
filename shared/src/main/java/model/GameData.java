@@ -49,4 +49,13 @@ public class GameData {
 
     public void setBlackUsername(String blackUsername) { this.blackUsername = blackUsername; }
 
+    private boolean gameEnd = false;
+
+    public boolean isGameEnd() {
+        return gameEnd;
+    }
+
+    public void setGameEnd(boolean gameEnd) {
+        this.gameEnd=gameEnd;
+    }
 }
