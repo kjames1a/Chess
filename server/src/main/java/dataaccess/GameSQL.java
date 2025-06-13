@@ -43,13 +43,37 @@ public class GameSQL implements GameDataAccess {
         return null;
     }
 
+    public boolean gameEnd(int gameID) throws ResponseException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT gameEnd FROM gameData WHERE gameID=?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setInt(1, gameID);
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readBoolean(rs);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new ResponseException(500, String.format("Error: Unable to read data: %s", e.getMessage()));
+        }
+        return false;
+    }
+
+    private boolean readBoolean(ResultSet rs) throws SQLException {
+        return rs.getBoolean("gameEnd");
+    }
+
     public GameData update(GameData game) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "UPDATE gameData SET whiteUsername = ?, blackUsername = ? WHERE gameID = ?";
+            var statement = "UPDATE gameData SET whiteUsername = ?, blackUsername = ?, json = ?, gameEnd = ? WHERE gameID = ?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1, game.getWhiteUsername());
                 ps.setString(2, game.getBlackUsername());
-                ps.setInt(3, game.getGameID());
+                String json= new Gson().toJson(game);
+                ps.setString(3, json);
+                ps.setBoolean(4, game.isGameEnd());
+                ps.setInt(5, game.getGameID());
                 try {
                     int gameNum = ps.executeUpdate();
                     if (gameNum == 0) {
@@ -59,9 +83,7 @@ public class GameSQL implements GameDataAccess {
                 } catch (Exception e) {
                     throw new DataAccessException("Error: Game update fail");
                 }
-            } catch (Exception e) {
-                throw new DataAccessException("Error: Failed to retrieve game data");
-            }
+                }
         } catch (Exception e) {
             throw new DataAccessException("Error: Failed to connect to database");
         }
@@ -109,6 +131,7 @@ public class GameSQL implements GameDataAccess {
               `gameName` varchar(256) NUll,
               `game` TEXT DEFAULT NULL,
               `json` TEXT DEFAULT NULL,
+              `gameEnd` BOOLEAN DEFAULT FALSE,
               PRIMARY KEY (`gameID`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """

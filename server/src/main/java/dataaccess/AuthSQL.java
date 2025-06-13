@@ -43,6 +43,23 @@ public class AuthSQL implements AuthDataAccess {
         return null;
     }
 
+    public String getUserName(String authToken) throws DataAccessException, ResponseException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT username, json FROM authData WHERE authToken=?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setString(1, authToken);
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readUserName(rs);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new ResponseException(500, String.format("Unable to read data: %s", e.getMessage()));
+        }
+        return null;
+    }
+
     public void deleteAuthToken(String authToken) throws ResponseException, DataAccessException {
         var statement = "DELETE FROM authData WHERE authToken=?";
         DataAccessHelper.executeUpdate(statement, authToken);
@@ -58,6 +75,10 @@ public class AuthSQL implements AuthDataAccess {
         var json = rs.getString("json");
         var token = new Gson().fromJson(json, AuthData.class);
         return token.setAuthToken(authToken);
+    }
+
+    private String readUserName(ResultSet rs) throws SQLException {
+        return rs.getString("username");
     }
 
     private final String[] createStatements = {
