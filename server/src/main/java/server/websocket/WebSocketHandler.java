@@ -70,7 +70,7 @@ public class WebSocketHandler {
         try {
             int gameID= connectCommand.getGameID();
             String userColor = connectCommand.getUserColor();
-            connections.add(userName, session);
+            connections.add(session, userName, gameID);
             GameSQL gameSQL = new GameSQL();
             GameData gameData = gameSQL.getGame(gameID);
             if (gameData == null) {
@@ -89,6 +89,7 @@ public class WebSocketHandler {
                 Connection connection = new Connection(userName, session);
                 String loadMessage = new Gson().toJson(errorMessage);
                 connection.send(loadMessage);
+                return;
             }
             ServerMessage loadGame = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
             loadGame.setChessGame(chessGame);
@@ -99,11 +100,11 @@ public class WebSocketHandler {
             if (!userName.equals(gameData.getBlackUsername()) && !userName.equals(gameData.getWhiteUsername()) && gameData.getGameID() == gameID) {
                 notification.setMessage(String.format("%s joined game as an observer.", userName));
                 String json = new Gson().toJson(notification);
-                connections.serverBroadcast(userName, json);
-            } else {
+                connections.serverBroadcast(userName, json, gameID);
+            } else if (gameData.getGameID() == gameID) {
                 notification.setMessage(String.format("%s is playing on the %s team.", userName, userColor));
                 String json = new Gson().toJson(notification);
-                connections.serverBroadcast(userName, json);
+                connections.serverBroadcast(userName, json, gameID);
             }
         } catch (Exception ex) {
             ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
@@ -177,7 +178,7 @@ public class WebSocketHandler {
             ServerMessage loadGame = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
             loadGame.setChessGame(chessGame);
             String loadMessage = new Gson().toJson(loadGame);
-            connections.serverBroadcast("", loadMessage);
+            connections.serverBroadcast(null, loadMessage, gameID);
             ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
             ChessGame.TeamColor team = ChessGame.TeamColor.BLACK;
             switch (teamColor) {
@@ -198,7 +199,7 @@ public class WebSocketHandler {
                 notification.setMessage(String.format("%s moved %s.", userName, makeMoveCommand));
             }
             String json = new Gson().toJson(notification);
-            connections.serverBroadcast(userName, json);
+            connections.serverBroadcast(userName, json, gameID);
         } catch (Exception ex) {
             exceptionHelper(session, userName, ex);
         }
@@ -219,7 +220,7 @@ public class WebSocketHandler {
             ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
             notification.setMessage(String.format("%s has left the game.", userName));
             String json = new Gson().toJson(notification);
-            connections.serverBroadcast(userName, json);
+            connections.serverBroadcast(userName, json, gameID);
         } catch (Exception ex) {
             exceptionHelper(session, userName, ex);
         }
@@ -255,7 +256,7 @@ public class WebSocketHandler {
             Connection connection = new Connection(userName, session);
             connection.send(resignMessage);
             String json = new Gson().toJson(notification);
-            connections.serverBroadcast(userName, json);
+            connections.serverBroadcast(userName, json, gameID);
         } catch (Exception ex) {
             exceptionHelper(session, userName, ex);
         }
