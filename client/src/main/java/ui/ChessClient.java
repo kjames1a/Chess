@@ -3,6 +3,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 
+import chess.ChessMove;
+import websocket.NotificationHandler;
+import websocket.WebSocketFacade;
 import chess.ChessGame;
 import model.*;
 import exceptions.ResponseException;
@@ -12,10 +15,14 @@ public class ChessClient {
     private final ServerFacade server;
     private final String serverUrl;
     private State state = State.SIGNEDOUT;
+    private final NotificationHandler notificationHandler;
+    private WebSocketFacade ws;
 
-    public ChessClient(String serverUrl) {
+
+    public ChessClient(String serverUrl, NotificationHandler notificationHandler) {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
+        this.notificationHandler = notificationHandler;
     }
 
     public String eval(String input) {
@@ -23,8 +30,9 @@ public class ChessClient {
             var tokens = input.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-            Set<String> cmds = Set.of("register","r", "signIn", "s", "list", "l", "create", "c", "join", "j",
-                    "watch", "w", "logout", "quit", "q", "help", "h");
+            Set<String> cmds = Set.of("register", "r", "signIn", "s", "list", "l", "create", "c", "join", "j",
+                    "watch", "w", "logout", "quit", "q", "help", "h", "leave", "m", "move", "hi", "highlight",
+                    "rd", "redraw", "res", "resign");
             if (!cmds.contains(cmd)) {
                 throw new ResponseException(400, "Please choose one of the options or 'h' to receive help");
             }
@@ -138,6 +146,9 @@ public class ChessClient {
                 } else {
                     new ChessBoard().chessBoardBlack();
                 }
+                ws = new WebSocketFacade(serverUrl, notificationHandler, authData.getAuthToken(), gameID);
+                ws.playGame();
+                state = State.PLAYINGGAME;
                 return String.format("Joined game %s as %s team", joinGame.getGameName(), playerColor);
             } catch (NumberFormatException ignored) {
             }
@@ -163,6 +174,8 @@ public class ChessClient {
             var joinedGame = new JoinData(gameID, null, gameName.getGameName());
             server.watchGame(joinedGame, authData.getAuthToken());
             new ChessBoard().chessBoardWhite();
+            ws = new WebSocketFacade(serverUrl, notificationHandler, authData.getAuthToken(), gameID);
+            ws.watchGame(authData.getUsername());
             return String.format("Watching game %s", gameName.getGameName());
         }
         throw new ResponseException(400, "Expected <game id>");
@@ -186,6 +199,16 @@ public class ChessClient {
                     Register a new user: "r", "register" <USERNAME> <PASSWORD> <EMAIL>
                     Exit the program: "q", "quit"
                     Print this message: "h", "help"
+                    """;
+        }
+        if (state == State.PLAYINGGAME) {
+            return """
+                    Options:
+                    Highlight legal moves: "hi", "highlight" <position> (e.g. f5)
+                    Make a move: "m", "move" <source> <destination> <optional promotion> (e.g. f5 e4 q)
+                    Redraw Chess Board: "rd", "redraw"
+                    Resign from game: "res", "resign"
+                    Leave game: "leave"
                     """;
         }
         return """
